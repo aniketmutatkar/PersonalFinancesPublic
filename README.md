@@ -2,27 +2,8 @@
 
 > A comprehensive full-stack financial analytics platform featuring transaction categorization, investment portfolio tracking, budget analysis, and OCR-powered statement processing.
 
-## 🎥 Live Demo
-
-### Dashboard Overview
 ![Dashboard Demo](docs/gifs/dashboard-demo.gif)
 *Complete financial overview with portfolio tracking and budget analysis*
-
-### Portfolio Performance
-![Portfolio Demo](docs/gifs/portfolio-demo.gif)
-*Investment tracking across 7 accounts with 3 years of growth data*
-
-### Transaction Management
-![Transactions Demo](docs/gifs/transactions-demo.gif)
-*Browse and filter 1,800+ categorized transactions*
-
-### File Upload & Processing
-![Upload Demo](docs/gifs/upload-demo.gif)
-*OCR-powered statement processing with duplicate detection*
-
-### Budget Analysis
-![Budget Demo](docs/gifs/budget-demo.gif)
-*Real-time budget vs. actual spending with visual alerts*
 
 ## 🚀 One-Click Demo Setup
 
@@ -41,8 +22,6 @@ python demo_setup.py
 - Start both backend and frontend servers
 - Open your browser to the dashboard
 
-![Dashboard Overview](docs/screenshots/dashboard-overview.png)
-
 ## 🎥 What You'll See
 
 ### 📊 Complete Financial Dashboard
@@ -58,45 +37,6 @@ python demo_setup.py
 - **Smart duplicate detection** prevents data errors
 - **Advanced analytics** with spending patterns and trends
 - **Responsive design** works on desktop and mobile
-
-![Portfolio Analytics](docs/screenshots/portfolio-performance.png)
-
-## 🧪 Testing the Demo
-
-### 1. **Explore the Dashboard**
-- **Overview Page**: See your complete financial picture
-- **Transactions**: Browse 1,800+ categorized transactions
-- **Portfolio**: Track $200K across Wealthfront, Schwab, Acorns, Robinhood, 401k, Roth IRA
-- **Budget Analysis**: View spending vs. budget with alerts
-- **Bank Accounts**: Monitor Wells Fargo checking/savings balances
-
-### 2. **Test File Upload Features**
-Navigate to the upload section and try these sample files (included in the repo):
-
-#### CSV Transaction Imports
-- `demo/sample_files/wells_fargo_demo_transactions.csv` - Standard bank export
-- `demo/sample_files/duplicate_test_transactions.csv` - Test duplicate detection
-- `demo/sample_files/demo_bank_export.csv` - Alternative format testing
-
-#### PDF Statement Processing (OCR)
-- `demo/sample_files/wells_fargo_demo_statement.pdf` - Bank statement OCR
-- `demo/sample_files/wealthfront_demo_statement.pdf` - Investment statement OCR
-
-![Upload Interface](docs/screenshots/file-upload-demo.png)
-
-### 3. **API Exploration**
-Visit the auto-generated API documentation:
-- **Backend API**: `http://localhost:8000/docs`
-- **Interactive testing** of all endpoints
-- **Real-time data** from your demo database
-
-### 4. **Advanced Features**
-- **Budget Alerts**: See which categories are over/under budget
-- **Investment Analytics**: Track portfolio performance and allocation
-- **Spending Patterns**: Identify trends and insights
-- **Monthly Reports**: Comprehensive financial summaries
-
-![Budget Analysis](docs/screenshots/budget-comparison.png)
 
 ## 🛠 Tech Stack
 
@@ -166,6 +106,9 @@ PersonalFinancesPublic/
 | Roth IRA | Charles Schwab | Retirement | 4.0% | ~$8K |
 | Wealthfront Cash | Wealthfront | Cash | 1.0% | ~$2K |
 
+![Portfolio Demo](docs/gifs/portfolio-demo.gif)
+*Investment tracking across 7 accounts with 3 years of growth data*
+
 ### Transaction Categories
 - **Housing**: $2,400/month (rent payments)
 - **Food**: $800/month (groceries + restaurants)
@@ -176,7 +119,47 @@ PersonalFinancesPublic/
 - **Healthcare**: $200/month (insurance, medical)
 - **Shopping**: $400/month (general purchases)
 
-![Transaction Breakdown](docs/screenshots/spending-categories.png)
+![Transactions Demo](docs/gifs/transactions-demo.gif)
+*Browse and filter 1,800+ categorized transactions*
+
+## 🧪 Testing the Demo
+
+### 1. **Explore the Dashboard**
+- **Overview Page**: See your complete financial picture
+- **Transactions**: Browse 1,800+ categorized transactions
+- **Portfolio**: Track $200K across Wealthfront, Schwab, Acorns, Robinhood, 401k, Roth IRA
+- **Budget Analysis**: View spending vs. budget with alerts
+- **Bank Accounts**: Monitor Wells Fargo checking/savings balances
+
+### 2. **Test File Upload Features**
+Navigate to the upload section and try these sample files (included in the repo):
+
+![Upload Demo](docs/gifs/upload-demo.gif)
+*OCR-powered statement processing with duplicate detection*
+
+#### CSV Transaction Imports
+- `demo/sample_files/wells_fargo_demo_transactions.csv` - Standard bank export
+- `demo/sample_files/duplicate_test_transactions.csv` - Test duplicate detection
+- `demo/sample_files/demo_bank_export.csv` - Alternative format testing
+
+#### PDF Statement Processing (OCR)
+- `demo/sample_files/wells_fargo_demo_statement.pdf` - Bank statement OCR
+- `demo/sample_files/wealthfront_demo_statement.pdf` - Investment statement OCR
+
+### 3. **API Exploration**
+Visit the auto-generated API documentation:
+- **Backend API**: `http://localhost:8000/docs`
+- **Interactive testing** of all endpoints
+- **Real-time data** from your demo database
+
+### 4. **Advanced Features**
+- **Budget Alerts**: See which categories are over/under budget
+- **Investment Analytics**: Track portfolio performance and allocation
+- **Spending Patterns**: Identify trends and insights
+- **Monthly Reports**: Comprehensive financial summaries
+
+![Budget Demo](docs/gifs/budget-demo.gif)
+*Real-time budget vs. actual spending with visual alerts*
 
 ## 🚀 Manual Setup (Alternative)
 
@@ -268,49 +251,6 @@ This project demonstrates:
 - **Environment Management**: Development vs. production configs
 - **Documentation**: Comprehensive setup and usage guides
 - **Demo System**: One-click demonstration environment
-
-## 📸 Screenshots & Demos
-
-### Creating Screenshots
-To document your demo, take these key screenshots:
-
-1. **Dashboard Overview** (`dashboard-overview.png`)
-   - Full dashboard with all widgets visible
-   - Show portfolio value, recent transactions, budget status
-
-2. **Portfolio Performance** (`portfolio-performance.png`)
-   - Portfolio trends chart over 3 years
-   - Account allocation pie chart
-   - Growth attribution analysis
-
-3. **Transaction Management** (`transaction-management.png`)
-   - Transaction list with filters applied
-   - Category breakdown
-   - Search/sort functionality
-
-4. **Budget Analysis** (`budget-comparison.png`)
-   - Budget vs. actual spending chart
-   - Category-wise budget performance
-   - Alert indicators for over-budget items
-
-5. **File Upload Demo** (`file-upload-demo.png`)
-   - Upload interface with sample files
-   - Processing results
-   - Duplicate detection warnings
-
-6. **Investment Analytics** (`investment-analytics.png`)
-   - Individual account performance
-   - Institution comparison
-   - Monthly contribution tracking
-
-### Adding Screenshots
-1. Create a `docs/screenshots/` directory
-2. Take screenshots at 1920x1080 resolution
-3. Save as PNG files with descriptive names
-4. Reference them in README with relative paths:
-   ```markdown
-   ![Dashboard Overview](docs/screenshots/dashboard-overview.png)
-   ```
 
 ## 🔧 Customization
 
