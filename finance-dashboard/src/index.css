@@ -1,0 +1,402 @@
+/* src/index.css - Unified Design System */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply font-sans antialiased;
+  }
+}
+
+@layer components {
+  /* ===== TYPOGRAPHY SYSTEM ===== */
+  
+  /* Page Headers */
+  .page-title {
+    @apply text-3xl font-bold text-white mb-2;
+  }
+  
+  .page-subtitle {
+    @apply text-lg text-gray-400 mb-8;
+  }
+  
+  /* Section Headers */
+  .section-title {
+    @apply text-xl font-semibold text-white mb-4;
+  }
+  
+  .section-subtitle {
+    @apply text-sm text-gray-400 mb-6;
+  }
+  
+  /* Content Text */
+  .text-primary {
+    @apply text-white font-medium;
+  }
+  
+  .text-secondary {
+    @apply text-gray-300;
+  }
+  
+  .text-muted {
+    @apply text-gray-400;
+  }
+  
+  .text-disabled {
+    @apply text-gray-500;
+  }
+  
+  /* Metric Values */
+  .metric-hero {
+    @apply text-4xl font-bold text-white leading-none;
+  }
+  
+  .metric-large {
+    @apply text-2xl font-bold text-white leading-none;
+  }
+  
+  .metric-medium {
+    @apply text-xl font-bold text-white leading-none;
+  }
+  
+  .metric-small {
+    @apply text-lg font-semibold text-white leading-none;
+  }
+  
+  /* Labels */
+  .label-primary {
+    @apply text-sm font-medium text-gray-300 uppercase tracking-wide;
+  }
+  
+  .label-secondary {
+    @apply text-xs font-medium text-gray-400 uppercase tracking-wide;
+  }
+  
+  /* ===== COLOR SYSTEM ===== */
+  
+  /* Status Colors */
+  .text-success {
+    @apply text-green-400;
+  }
+  
+  .text-warning {
+    @apply text-yellow-400;
+  }
+  
+  .text-danger {
+    @apply text-red-400;
+  }
+  
+  .text-info {
+    @apply text-blue-400;
+  }
+  
+  .text-accent {
+    @apply text-purple-400;
+  }
+  
+  /* Background Status Colors */
+  .bg-success {
+    @apply bg-green-600;
+  }
+  
+  .bg-warning {
+    @apply bg-yellow-600;
+  }
+  
+  .bg-danger {
+    @apply bg-red-600;
+  }
+  
+  .bg-info {
+    @apply bg-blue-600;
+  }
+  
+  .bg-accent {
+    @apply bg-purple-600;
+  }
+  
+  /* ===== CARD SYSTEM ===== */
+  
+  /* Base Card */
+  .card {
+    @apply bg-gray-800 border border-gray-700 rounded-lg;
+  }
+  
+  /* Card Sizes */
+  .card-compact {
+    @apply card p-4;
+  }
+  
+  .card-standard {
+    @apply card p-6;
+  }
+  
+  .card-spacious {
+    @apply card p-8;
+  }
+  
+  /* Card Variants */
+  .card-elevated {
+    @apply card hover:border-gray-600 transition-colors duration-200;
+  }
+  
+  .card-interactive {
+    @apply card-elevated hover:transform hover:-translate-y-1 transition-all duration-200 cursor-pointer;
+  }
+  
+  .card-hero {
+    @apply card p-8 bg-gradient-to-br from-gray-800 to-gray-700 border-gray-600;
+  }
+  
+  /* Status Cards */
+  .card-success {
+    @apply card bg-gradient-to-br from-gray-800 to-green-900/20 border-green-800/30;
+  }
+  
+  .card-warning {
+    @apply card bg-gradient-to-br from-gray-800 to-yellow-900/20 border-yellow-800/30;
+  }
+  
+  .card-danger {
+    @apply card bg-gradient-to-br from-gray-800 to-red-900/20 border-red-800/30;
+  }
+  
+  .card-info {
+    @apply card bg-gradient-to-br from-gray-800 to-blue-900/20 border-blue-800/30;
+  }
+  
+  /* ===== BUTTON SYSTEM ===== */
+  
+  /* Base Button */
+  .btn {
+    @apply inline-flex items-center justify-center px-4 py-2 rounded-lg font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900;
+  }
+  
+  /* Button Sizes */
+  .btn-sm {
+    @apply btn text-sm px-3 py-1.5;
+  }
+  
+  .btn-md {
+    @apply btn text-sm px-4 py-2;
+  }
+  
+  .btn-lg {
+    @apply btn text-base px-6 py-3;
+  }
+  
+  /* Button Variants */
+  .btn-primary {
+    @apply btn bg-blue-600 hover:bg-blue-700 text-white focus:ring-blue-500;
+  }
+  
+  .btn-secondary {
+    @apply btn bg-gray-700 hover:bg-gray-600 text-white focus:ring-gray-500;
+  }
+  
+  .btn-success {
+    @apply btn bg-green-600 hover:bg-green-700 text-white focus:ring-green-500;
+  }
+  
+  .btn-warning {
+    @apply btn bg-yellow-600 hover:bg-yellow-700 text-white focus:ring-yellow-500;
+  }
+  
+  .btn-danger {
+    @apply btn bg-red-600 hover:bg-red-700 text-white focus:ring-red-500;
+  }
+  
+  .btn-ghost {
+    @apply btn bg-transparent hover:bg-gray-700 text-gray-300 hover:text-white border border-gray-600 hover:border-gray-500;
+  }
+  
+  /* ===== STATUS INDICATORS ===== */
+  
+  .status-badge {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+  }
+  
+  .status-success {
+    @apply status-badge bg-green-900/30 text-green-400 border border-green-800/50;
+  }
+  
+  .status-warning {
+    @apply status-badge bg-yellow-900/30 text-yellow-400 border border-yellow-800/50;
+  }
+  
+  .status-danger {
+    @apply status-badge bg-red-900/30 text-red-400 border border-red-800/50;
+  }
+  
+  .status-info {
+    @apply status-badge bg-blue-900/30 text-blue-400 border border-blue-800/50;
+  }
+  
+  .status-neutral {
+    @apply status-badge bg-gray-700/50 text-gray-300 border border-gray-600/50;
+  }
+  
+  /* ===== SPACING SYSTEM ===== */
+  
+  /* Layout Spacing */
+  .section-gap {
+    @apply mb-8;
+  }
+  
+  .content-gap {
+    @apply mb-6;
+  }
+  
+  .element-gap {
+    @apply mb-4;
+  }
+  
+  .tight-gap {
+    @apply mb-2;
+  }
+  
+  /* Grid Gaps */
+  .grid-tight {
+    @apply gap-4;
+  }
+  
+  .grid-normal {
+    @apply gap-6;
+  }
+  
+  .grid-loose {
+    @apply gap-8;
+  }
+  
+  /* ===== FORM SYSTEM ===== */
+  
+  .form-label {
+    @apply block text-sm font-medium text-gray-300 mb-2;
+  }
+  
+  .form-input {
+    @apply block w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent;
+  }
+  
+  .form-select {
+    @apply form-input appearance-none bg-gray-700 cursor-pointer;
+  }
+  
+  /* ===== TABLE SYSTEM ===== */
+  
+  .table-container {
+    @apply bg-gray-800 border border-gray-700 rounded-lg overflow-hidden;
+  }
+  
+  .table-header {
+    @apply bg-gray-750 px-6 py-4 border-b border-gray-700;
+  }
+  
+  .table-row {
+    @apply border-b border-gray-700/50 hover:bg-gray-700/20 transition-colors;
+  }
+  
+  .table-cell {
+    @apply px-6 py-4 text-sm text-gray-300;
+  }
+  
+  .table-cell-header {
+    @apply table-cell font-medium text-gray-400 uppercase tracking-wide;
+  }
+  
+  /* ===== LOADING STATES ===== */
+  
+  .loading-skeleton {
+    @apply animate-pulse bg-gray-700 rounded;
+  }
+  
+  .loading-text {
+    @apply loading-skeleton h-4;
+  }
+  
+  .loading-title {
+    @apply loading-skeleton h-6;
+  }
+  
+  .loading-metric {
+    @apply loading-skeleton h-8;
+  }
+  
+  /* ===== UTILITY CLASSES ===== */
+  
+  /* Hover States */
+  .hover-lift {
+    @apply hover:transform hover:-translate-y-1 transition-transform duration-200;
+  }
+  
+  .hover-glow {
+    @apply hover:shadow-lg hover:shadow-blue-500/20 transition-shadow duration-200;
+  }
+  
+  /* Focus States */
+  .focus-ring {
+    @apply focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-900;
+  }
+  
+  /* Animations */
+  .fade-in {
+    @apply animate-in fade-in duration-200;
+  }
+  
+  .slide-up {
+    @apply animate-in slide-in-from-bottom-4 duration-200;
+  }
+
+  /* ===== STANDARDIZED GRID SYSTEM ===== */
+
+  /* Metric Grid Options - Semantic naming */
+  .grid-metrics-3 {
+    @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6;
+  }
+
+  .grid-metrics-4 {
+    @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6;
+  }
+
+  .grid-metrics-5 {
+    @apply grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-6;
+  }
+
+  /* Layout Grid - For charts, tables, content sections */
+  .grid-layout-12 {
+    @apply grid grid-cols-12 gap-6;
+  }
+
+  /* Column Spans */
+  .col-3 {
+    @apply col-span-3;
+  }
+
+  .col-6 {
+    @apply col-span-6;
+  }
+
+  .col-8 {
+    @apply col-span-8;
+  }
+
+  .col-4 {
+    @apply col-span-4;
+  }
+
+  .col-9 {
+    @apply col-span-9;
+  }
+
+  .col-12 {
+    @apply col-span-12;
+  }
+
+  /* Page Wrapper */
+  .page-content {
+    @apply space-y-8;
+  }
+
+}

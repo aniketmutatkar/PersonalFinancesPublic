@@ -1,0 +1,16 @@
+pandas
+pyyaml
+tabulate
+fuzzywuzzy
+python-Levenshtein
+openpyxl
+sqlalchemy
+plotly
+fastapi
+uvicorn
+python-dotenv
+PyPDF2 
+pdfplumber 
+pytesseract
+pillow
+fitz

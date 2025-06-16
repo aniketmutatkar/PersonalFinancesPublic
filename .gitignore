@@ -1,0 +1,39 @@
+# Personal data
+*.db
+*.sqlite*
+config.yaml
+.env
+raw/
+transformed/
+exports/
+
+# Demo data (included in repo)
+!demo_data.db
+!config.demo.yaml
+!.env.example
+
+# Dependencies
+node_modules/
+__pycache__/
+*.pyc
+.pytest_cache/
+.coverage
+
+# Build outputs
+/build
+/dist
+*.egg-info/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
