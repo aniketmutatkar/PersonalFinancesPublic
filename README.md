@@ -1,8 +1,32 @@
-# Personal Finance Dashboard Demo 📊
+# Personal Finance Dashboard 📊
 
-> A full-stack financial analytics platform with transaction categorization, investment tracking, and comprehensive reporting.
+> A comprehensive full-stack financial analytics platform featuring transaction categorization, investment portfolio tracking, budget analysis, and OCR-powered statement processing.
 
-## 🚀 Quick Demo (30 seconds)
+## 🎥 Live Demo
+
+### Dashboard Overview
+![Dashboard Demo](docs/gifs/dashboard-demo.gif)
+*Complete financial overview with portfolio tracking and budget analysis*
+
+### Portfolio Performance
+![Portfolio Demo](docs/gifs/portfolio-demo.gif)
+*Investment tracking across 7 accounts with 3 years of growth data*
+
+### Transaction Management
+![Transactions Demo](docs/gifs/transactions-demo.gif)
+*Browse and filter 1,800+ categorized transactions*
+
+### File Upload & Processing
+![Upload Demo](docs/gifs/upload-demo.gif)
+*OCR-powered statement processing with duplicate detection*
+
+### Budget Analysis
+![Budget Demo](docs/gifs/budget-demo.gif)
+*Real-time budget vs. actual spending with visual alerts*
+
+## 🚀 One-Click Demo Setup
+
+Get a complete financial dashboard running in 30 seconds:
 
 ```bash
 git clone https://github.com/yourusername/PersonalFinancesPublic
@@ -10,168 +34,356 @@ cd PersonalFinancesPublic
 python demo_setup.py
 ```
 
-Visit http://localhost:3000 to see the dashboard with 2 years of realistic demo data!
+**That's it!** The script will:
+- Install all dependencies (Python + Node.js)
+- Generate 3 years of realistic demo data (2023-2025)
+- Create a $200K+ portfolio with 1,800+ transactions
+- Start both backend and frontend servers
+- Open your browser to the dashboard
 
-## ✨ Features
+![Dashboard Overview](docs/screenshots/dashboard-overview.png)
 
-- **Transaction Management**: Import & categorize 1,500+ demo transactions
-- **Investment Tracking**: $200K portfolio across 7 investment accounts
-- **Bank Integration**: Wells Fargo checking/savings account monitoring
-- **Budget Analysis**: Real-time budget vs. actual spending comparison
-- **Portfolio Analytics**: Investment growth tracking and performance metrics
-- **Statement Upload**: OCR-powered PDF statement processing
+## 🎥 What You'll See
+
+### 📊 Complete Financial Dashboard
+- **$200,000+ investment portfolio** across 7 real account types
+- **1,800+ categorized transactions** spanning 36 months
+- **Budget vs. actual analysis** with visual indicators
+- **Investment performance tracking** with growth attribution
+- **Bank account monitoring** (Wells Fargo integration)
+
+### 💼 Professional Features
+- **Real-time API** with auto-generated documentation
+- **OCR statement processing** (upload PDF bank statements)
+- **Smart duplicate detection** prevents data errors
+- **Advanced analytics** with spending patterns and trends
+- **Responsive design** works on desktop and mobile
+
+![Portfolio Analytics](docs/screenshots/portfolio-performance.png)
+
+## 🧪 Testing the Demo
+
+### 1. **Explore the Dashboard**
+- **Overview Page**: See your complete financial picture
+- **Transactions**: Browse 1,800+ categorized transactions
+- **Portfolio**: Track $200K across Wealthfront, Schwab, Acorns, Robinhood, 401k, Roth IRA
+- **Budget Analysis**: View spending vs. budget with alerts
+- **Bank Accounts**: Monitor Wells Fargo checking/savings balances
+
+### 2. **Test File Upload Features**
+Navigate to the upload section and try these sample files (included in the repo):
+
+#### CSV Transaction Imports
+- `demo/sample_files/wells_fargo_demo_transactions.csv` - Standard bank export
+- `demo/sample_files/duplicate_test_transactions.csv` - Test duplicate detection
+- `demo/sample_files/demo_bank_export.csv` - Alternative format testing
+
+#### PDF Statement Processing (OCR)
+- `demo/sample_files/wells_fargo_demo_statement.pdf` - Bank statement OCR
+- `demo/sample_files/wealthfront_demo_statement.pdf` - Investment statement OCR
+
+![Upload Interface](docs/screenshots/file-upload-demo.png)
+
+### 3. **API Exploration**
+Visit the auto-generated API documentation:
+- **Backend API**: `http://localhost:8000/docs`
+- **Interactive testing** of all endpoints
+- **Real-time data** from your demo database
+
+### 4. **Advanced Features**
+- **Budget Alerts**: See which categories are over/under budget
+- **Investment Analytics**: Track portfolio performance and allocation
+- **Spending Patterns**: Identify trends and insights
 - **Monthly Reports**: Comprehensive financial summaries
-- **Duplicate Detection**: Smart transaction deduplication
 
-## 🎥 Demo Data Overview
-
-This repository includes realistic demo data for testing:
-
-- **$200,000 investment portfolio** across 7 accounts (Wealthfront, Schwab, etc.)
-- **1,500 transactions** over 24 months showing realistic spending patterns
-- **Monthly expenses** averaging $4,200 with proper categorization
-- **Investment growth** with realistic market volatility
-- **Sample bank statements** for upload testing (PDF & CSV)
-
-All data is synthetic and generated for demonstration purposes only.
+![Budget Analysis](docs/screenshots/budget-comparison.png)
 
 ## 🛠 Tech Stack
 
-**Backend:** Python 3.12, FastAPI, SQLAlchemy, SQLite  
-**Frontend:** React, TypeScript, TanStack Query, Tailwind CSS  
-**Data Processing:** Pandas, PDF parsing, OCR  
-**Database:** SQLite with comprehensive financial schema
+| Component | Technology | Purpose |
+|-----------|------------|---------|
+| **Backend** | Python 3.12, FastAPI | REST API with auto-documentation |
+| **Database** | SQLAlchemy, SQLite | Robust financial data modeling |
+| **Frontend** | React 18, TypeScript | Type-safe, responsive UI |
+| **Styling** | Tailwind CSS | Modern, consistent design |
+| **State Management** | TanStack Query | Efficient API state management |
+| **Data Processing** | Pandas, PDF parsing | Transaction import and OCR |
+| **Charts** | Recharts | Interactive financial visualizations |
 
-## 📊 Dashboard Features
-
-### Transaction Analytics
-- Automatic categorization with 15+ spending categories
-- Monthly and yearly trend analysis
-- Budget vs. actual comparison with alerts
-- Smart duplicate detection and handling
-
-### Investment Portfolio
-- Multi-account portfolio tracking (Wealthfront, Schwab, Acorns, Robinhood, 401k, Roth IRA)
-- Growth attribution analysis (market vs. deposits)
-- Historical performance with monthly snapshots
-- Institution-level breakdowns
-
-### Bank Account Management
-- Wells Fargo checking and savings account integration
-- Monthly balance tracking with OCR statement processing
-- Deposit and withdrawal pattern analysis
-- Account balance trend visualization
-
-## 🚀 One-Click Setup
-
-The demo includes a one-command setup that:
-
-1. ✅ Installs all Python and Node.js dependencies
-2. ✅ Generates 2 years of realistic financial data
-3. ✅ Creates demo database with proper schema
-4. ✅ Sets up environment configuration
-5. ✅ Starts both backend API and frontend servers
-
-```bash
-python demo_setup.py
-# Backend: http://localhost:8000 (API docs at /docs)
-# Frontend: http://localhost:3000 (Main dashboard)
-```
-
-## 📁 Repository Structure
+## 📁 Project Architecture
 
 ```
 PersonalFinancesPublic/
-├── src/                    # Backend Python code
-│   ├── api/               # FastAPI routes and schemas
-│   ├── models/            # Database models
-│   ├── services/          # Business logic
-│   └── repositories/      # Data access layer
-├── finance-dashboard/     # React frontend
-│   ├── src/components/    # UI components
-│   ├── src/services/      # API integration
-│   └── src/types/         # TypeScript definitions
-├── demo/                  # Demo data generation
-│   ├── data_generator/    # Realistic data generators
-│   └── sample_files/      # Sample PDFs and CSVs
-├── demo_setup.py         # One-click setup script
-├── config.demo.yaml      # Demo configuration
-└── requirements.txt      # Python dependencies
+├── 📱 Frontend (React + TypeScript)
+│   ├── finance-dashboard/src/
+│   │   ├── components/          # Reusable UI components
+│   │   ├── services/           # API integration layer
+│   │   ├── types/              # TypeScript definitions
+│   │   └── utils/              # Helper functions
+│   
+├── ⚙️ Backend (Python + FastAPI)
+│   ├── src/
+│   │   ├── api/                # FastAPI routes and schemas
+│   │   ├── models/             # Database models
+│   │   ├── services/           # Business logic
+│   │   ├── repositories/       # Data access layer
+│   │   └── utils/              # Utility functions
+│   
+├── 🎭 Demo System
+│   ├── demo/
+│   │   ├── data_generator/     # Realistic data generation
+│   │   └── sample_files/       # Upload testing files
+│   ├── demo_setup.py          # One-click setup script
+│   └── test.py                # Demo database creator
+│   
+├── ⚙️ Configuration
+│   ├── config.demo.yaml       # Demo app configuration
+│   ├── database.py            # Database setup
+│   └── requirements.txt       # Python dependencies
+│   
+└── 📖 Documentation
+    ├── README.md              # This file
+    └── docs/                  # Screenshots and guides
 ```
 
-## 🔧 Development
+## 💳 Demo Data Overview
 
-### Manual Setup (Alternative)
+### Financial Profile
+- **Total Portfolio Value**: $200,000+ (realistic growth 2023-2025)
+- **Monthly Income**: $6,000 (biweekly salary + quarterly bonuses)
+- **Monthly Expenses**: ~$4,200 (rent, food, transportation, etc.)
+- **Savings Rate**: 47% (impressive but achievable)
+- **Investment Allocation**: Diversified across 7 account types
 
-If you prefer manual setup:
+### Account Breakdown
+| Account | Institution | Type | Allocation | Demo Value |
+|---------|------------|------|------------|------------|
+| Wealthfront Investment | Wealthfront | Brokerage | 37.5% | ~$75K |
+| Schwab Brokerage | Charles Schwab | Brokerage | 22.5% | ~$45K |
+| 401(k) Plan | ADP | Retirement | 17.5% | ~$35K |
+| Robinhood | Robinhood | Brokerage | 10.0% | ~$20K |
+| Acorns | Acorns | Micro-investing | 7.5% | ~$15K |
+| Roth IRA | Charles Schwab | Retirement | 4.0% | ~$8K |
+| Wealthfront Cash | Wealthfront | Cash | 1.0% | ~$2K |
 
+### Transaction Categories
+- **Housing**: $2,400/month (rent payments)
+- **Food**: $800/month (groceries + restaurants)
+- **Transportation**: $300/month (gas, rideshare)
+- **Investment**: $1,400/month (regular transfers)
+- **Utilities**: $250/month (phone, internet, electric)
+- **Entertainment**: $150/month (streaming, events)
+- **Healthcare**: $200/month (insurance, medical)
+- **Shopping**: $400/month (general purchases)
+
+![Transaction Breakdown](docs/screenshots/spending-categories.png)
+
+## 🚀 Manual Setup (Alternative)
+
+If you prefer step-by-step setup:
+
+### Backend
 ```bash
-# Backend setup
+# Install Python dependencies
 pip install -r requirements.txt
-python -c "from demo.data_generator.demo_seeder import generate_demo_data; generate_demo_data()"
-python run_api.py
 
-# Frontend setup (separate terminal)
+# Generate demo database
+python test.py
+
+# Start API server
+python run_api.py
+```
+
+### Frontend
+```bash
+# Install Node.js dependencies
 cd finance-dashboard
 npm install
+
+# Start development server
 npm start
 ```
 
-### Adding Custom Data
+### Access Points
+- **Frontend Dashboard**: http://localhost:3000
+- **Backend API**: http://localhost:8000
+- **API Documentation**: http://localhost:8000/docs
 
-To modify the demo data:
+## 🎯 Key Features Demonstrated
 
-```python
-# Edit demo/data_generator/demo_data_generator.py
-class DemoDataGenerator:
-    def customize_spending_patterns(self):
-        # Modify transaction patterns
-        # Adjust portfolio allocation
-        # Change account balances
-```
+### 💰 Transaction Management
+- **Automatic Categorization**: 15+ spending categories with keyword matching
+- **Duplicate Detection**: Smart prevention of duplicate entries
+- **Bulk Import**: CSV file processing with validation
+- **Manual Entry**: Add individual transactions with validation
 
-## 📈 Sample Transactions
+### 📈 Investment Portfolio
+- **Multi-Account Tracking**: 7 different account types
+- **Performance Analytics**: Growth attribution (market vs. deposits)
+- **Historical Data**: 36 months of balance snapshots
+- **Institution Breakdown**: Analyze by brokerage/institution
 
-The demo includes realistic transaction patterns:
+### 📊 Budget & Analytics
+- **Budget vs. Actual**: Visual comparison with alerts
+- **Spending Patterns**: Identify trends and outliers
+- **Monthly Reports**: Comprehensive financial summaries
+- **Year-over-Year**: Compare financial progress
 
-- **Housing**: Monthly rent payments ($2,400)
-- **Food**: Groceries and restaurant spending ($800/month avg)
-- **Investment**: Regular transfers to Wealthfront, Schwab ($1,500/month)
-- **Transportation**: Gas, parking, rideshare
-- **Entertainment**: Streaming, events, hobbies
-- **Healthcare**: Insurance, medical expenses
-- **Utilities**: Phone, internet, electricity
+### 🏦 Bank Integration
+- **Account Monitoring**: Checking and savings balances
+- **Statement Processing**: OCR extraction from PDF statements
+- **Balance Tracking**: Historical balance trends
+- **Deposit/Withdrawal Analysis**: Cash flow patterns
 
-## 💼 Professional Features
+### 📄 Document Processing
+- **PDF OCR**: Extract data from bank/investment statements
+- **Multiple Formats**: Support for various bank export formats
+- **Error Handling**: Graceful handling of processing failures
+- **Review Workflow**: Manual verification of extracted data
 
-### API Documentation
-- **Auto-generated docs**: Visit http://localhost:8000/docs
-- **OpenAPI schema**: Full REST API specification
-- **Type safety**: Pydantic models with validation
+## 💼 Professional Highlights
 
-### Code Quality
-- **TypeScript**: Full type coverage on frontend
-- **SQLAlchemy**: Robust database modeling
-- **Error handling**: Comprehensive error management
-- **Testing ready**: Structured for unit/integration tests
+This project demonstrates:
+
+### Full-Stack Development
+- **Modern Tech Stack**: React, TypeScript, FastAPI, SQLAlchemy
+- **Clean Architecture**: Separation of concerns, dependency injection
+- **Type Safety**: End-to-end TypeScript + Pydantic validation
+- **Error Handling**: Comprehensive error management and user feedback
+
+### Financial Domain Expertise
+- **Complex Data Modeling**: Multi-table relationships, financial calculations
+- **Regulatory Awareness**: Data privacy and financial data security
+- **Business Logic**: Investment tracking, budget analysis, cash flow
+- **User Experience**: Intuitive financial dashboard design
+
+### Data Engineering
+- **ETL Pipelines**: Transaction import and processing
+- **OCR Integration**: PDF statement parsing
+- **Data Validation**: Duplicate detection and data integrity
+- **Performance**: Efficient queries and data aggregation
+
+### DevOps & Deployment
+- **Containerization Ready**: Docker-friendly structure
+- **Environment Management**: Development vs. production configs
+- **Documentation**: Comprehensive setup and usage guides
+- **Demo System**: One-click demonstration environment
+
+## 📸 Screenshots & Demos
+
+### Creating Screenshots
+To document your demo, take these key screenshots:
+
+1. **Dashboard Overview** (`dashboard-overview.png`)
+   - Full dashboard with all widgets visible
+   - Show portfolio value, recent transactions, budget status
+
+2. **Portfolio Performance** (`portfolio-performance.png`)
+   - Portfolio trends chart over 3 years
+   - Account allocation pie chart
+   - Growth attribution analysis
+
+3. **Transaction Management** (`transaction-management.png`)
+   - Transaction list with filters applied
+   - Category breakdown
+   - Search/sort functionality
+
+4. **Budget Analysis** (`budget-comparison.png`)
+   - Budget vs. actual spending chart
+   - Category-wise budget performance
+   - Alert indicators for over-budget items
+
+5. **File Upload Demo** (`file-upload-demo.png`)
+   - Upload interface with sample files
+   - Processing results
+   - Duplicate detection warnings
+
+6. **Investment Analytics** (`investment-analytics.png`)
+   - Individual account performance
+   - Institution comparison
+   - Monthly contribution tracking
+
+### Adding Screenshots
+1. Create a `docs/screenshots/` directory
+2. Take screenshots at 1920x1080 resolution
+3. Save as PNG files with descriptive names
+4. Reference them in README with relative paths:
+   ```markdown
+   ![Dashboard Overview](docs/screenshots/dashboard-overview.png)
+   ```
+
+## 🔧 Customization
+
+### Modify Demo Data
+Edit `demo/data_generator/demo_data_generator.py` to customize:
+- Transaction amounts and patterns
+- Portfolio allocation and growth
+- Account types and institutions
+- Time periods and frequency
+
+### Extend Functionality
+The modular architecture makes it easy to add:
+- New financial institutions
+- Additional transaction categories
+- Advanced analytics features
+- Integration with external APIs
+
+### Configuration
+Update `config.demo.yaml` to modify:
+- Category definitions and keywords
+- Budget amounts and targets
+- Account configurations
+- File processing settings
+
+## 🤝 Contributing
+
+This is a demonstration repository showcasing a personal finance management system. While this is primarily for portfolio demonstration, suggestions and feedback are welcome!
+
+### Areas for Enhancement
+- Additional financial institution integrations
+- Advanced investment analytics
+- Mobile app development
+- Automated transaction categorization using ML
+- Goals and forecasting features
+
+## 📄 License
+
+MIT License - see [LICENSE](LICENSE) file for details.
 
 ## 🎯 Use Cases
 
 Perfect for demonstrating:
-- **Full-stack development** skills
-- **Financial domain** knowledge
-- **Data processing** capabilities
-- **UI/UX design** for complex applications
-- **Database design** for financial systems
 
-## 📄 License
+### For Employers
+- **Full-stack development** capabilities
+- **Financial domain** knowledge and experience
+- **Complex data modeling** and business logic
+- **Modern development** practices and tools
 
-MIT License - see LICENSE file for details.
+### For Learning
+- **React + TypeScript** frontend development
+- **FastAPI + SQLAlchemy** backend architecture
+- **Financial data** processing and analysis
+- **OCR and document** processing techniques
 
-## 🤝 Contributing
-
-This is a demo repository showcasing a personal finance system. For questions about implementation or suggestions, please open an issue.
+### For Extension
+- **Personal finance** management foundation
+- **Multi-tenant SaaS** application base
+- **Financial planning** tool development
+- **Investment tracking** system
 
 ---
 
-**Ready to explore personal finance analytics?** Run `python demo_setup.py` and start discovering insights in your demo financial data! 🚀
+## 🚀 Ready to Explore?
+
+**Start the demo and discover a comprehensive financial management platform built with modern technologies and best practices!**
+
+```bash
+python demo_setup.py
+```
+
+**Visit http://localhost:3000 and start exploring your $200K+ portfolio with 3 years of realistic financial data!**
+
+---
+
+*Built with ❤️ using React, TypeScript, FastAPI, and modern development practices. All demo data is synthetic and generated for demonstration purposes.*
