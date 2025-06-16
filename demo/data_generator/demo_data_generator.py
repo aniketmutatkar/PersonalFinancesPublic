@@ -1,67 +1,127 @@
 #!/usr/bin/env python3
 """
-Simple Demo Database Generator
-
-Just copies your existing database structure and fills it with demo data.
-No complicated mocking - just real data that matches your real schema.
+Create demo_data.db that mimics your EXACT production database structure
 """
 
+import sys
 import os
-import shutil
+sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
+from database import init_database, engine, get_db_session
+from src.config.config_manager import ConfigManager
+import random
 from datetime import datetime, date, timedelta
 from decimal import Decimal
-import random
 
-# Copy your existing database setup
-from database import init_database, get_db_session
-from src.models.models import Transaction
-from src.models.portfolio_models import InvestmentAccount, PortfolioBalance, BankBalance
-from src.repositories.transaction_repository import TransactionRepository
-from src.repositories.portfolio_repository import PortfolioRepository
-from src.repositories.monthly_summary_repository import MonthlySummaryRepository
-
-def clear_existing_data():
-    """Clear any existing data"""
-    session = get_db_session()
+def create_demo_database():
+    """Create demo database with EXACT same structure as production"""
+    
+    print("🎯 Creating demo database with production structure...")
+    
+    # Remove existing demo database
+    if os.path.exists("demo_data.db"):
+        os.remove("demo_data.db")
+        print("Removed existing demo_data.db")
+    
+    # Update the database configuration to point to demo database
+    import database
+    database.DB_NAME = 'demo_data.db'
+    database.DB_URL = 'sqlite:///demo_data.db'
+    database.engine = database.create_engine(database.DB_URL)
+    database.SessionLocal = database.sessionmaker(autocommit=False, autoflush=False, bind=database.engine)
+    
     try:
-        # Clear all tables
-        session.execute("DELETE FROM transactions")
-        session.execute("DELETE FROM portfolio_balances") 
-        session.execute("DELETE FROM bank_balances")
-        session.execute("DELETE FROM monthly_summaries")
+        # Load config to get categories
+        config_manager = ConfigManager()
+        categories = config_manager.get_categories()
+        
+        # Initialize database with EXACT same structure
+        init_database(categories.keys())
+        
+        print("✅ Database structure created successfully")
+        
+        # Verify the monthly_summary table was created
+        session = get_db_session()
+        try:
+            result = session.execute(database.text("SELECT name FROM sqlite_master WHERE type='table' AND name='monthly_summary'"))
+            if result.fetchone():
+                print("✅ monthly_summary table exists")
+            else:
+                print("❌ monthly_summary table missing")
+                # Create it manually
+                from database import create_monthly_summary_table
+                create_monthly_summary_table(categories.keys())
+                print("✅ Created monthly_summary table manually")
+        finally:
+            session.close()
+        
+        # Generate demo data
+        generate_demo_data(categories)
+        
+        print("✅ Demo database created: demo_data.db")
+        
+    except Exception as e:
+        print(f"❌ Error: {e}")
+        raise
+
+
+def generate_demo_data(categories):
+    """Generate realistic demo data"""
+    print("📊 Generating demo data...")
+    
+    # Get a fresh session with the correct database
+    session = get_db_session()
+    
+    try:
+        # Generate transactions
+        transactions = generate_transactions(categories)
+        
+        # Save transactions
+        from database import TransactionModel
+        for trans_data in transactions:
+            transaction = TransactionModel(**trans_data)
+            session.add(transaction)
+        
         session.commit()
-        print("✅ Cleared existing data")
+        print(f"✅ Generated {len(transactions)} transactions")
+        
+        # Generate portfolio data
+        generate_portfolio_data(session)
+        
+        # Generate bank balances
+        generate_bank_balances(session)
+        
+        # Skip monthly summaries for now - table creation issue
+        generate_monthly_summaries(session, categories)
+        
     except Exception as e:
         session.rollback()
-        print(f"⚠️  Error clearing data: {e}")
+        print(f"❌ Error generating demo data: {e}")
+        raise
     finally:
         session.close()
 
-def generate_demo_transactions():
-    """Generate demo transactions using your real Transaction model"""
-    print("💳 Generating demo transactions...")
-    
-    session = get_db_session()
-    repo = TransactionRepository()
-    
+
+def generate_transactions(categories):
+    """Generate realistic transactions using your categories"""
     transactions = []
-    start_date = date(2023, 1, 1)
-    end_date = date(2024, 12, 31)
     
-    # Income transactions (biweekly)
+    # Date range: 2 years
+    start_date = date(2023, 1, 1)
+    end_date = date(2025, 6, 1)
+    
+    # Income transactions (biweekly salary)
     current_date = start_date
     while current_date <= end_date:
         if current_date.weekday() == 4:  # Friday
-            transaction = Transaction(
-                date=current_date,
-                description="PAYROLL DEPOSIT - DEMO COMPANY",
-                amount=Decimal('6000.00'),
-                category="Income",
-                source="Wells Fargo Checking",
-                transaction_hash=f"demo_{current_date}_payroll",
-                month_str=current_date.strftime("%Y-%m")
-            )
-            session.add(transaction)
+            transactions.append({
+                'date': current_date,
+                'description': 'PAYROLL DEPOSIT - DEMO COMPANY',
+                'amount': 6000.0,
+                'category': 'Income',
+                'source': 'Wells Fargo Checking',
+                'month': current_date.strftime('%Y-%m'),
+                'transaction_hash': f"income_{current_date.isoformat()}_{random.randint(1000,9999)}"
+            })
             current_date += timedelta(days=14)
         else:
             current_date += timedelta(days=1)
@@ -69,16 +129,15 @@ def generate_demo_transactions():
     # Monthly rent
     current_date = start_date.replace(day=1)
     while current_date <= end_date:
-        transaction = Transaction(
-            date=current_date,
-            description="RENT PAYMENT - DEMO APARTMENTS",
-            amount=Decimal('-2400.00'),
-            category="Rent",
-            source="Wells Fargo Checking", 
-            transaction_hash=f"demo_{current_date}_rent",
-            month_str=current_date.strftime("%Y-%m")
-        )
-        session.add(transaction)
+        transactions.append({
+            'date': current_date,
+            'description': 'RENT PAYMENT - DEMO APARTMENTS',
+            'amount': -2400.0,
+            'category': 'Rent',
+            'source': 'Wells Fargo Checking',
+            'month': current_date.strftime('%Y-%m'),
+            'transaction_hash': f"rent_{current_date.isoformat()}_{random.randint(1000,9999)}"
+        })
         
         # Next month
         if current_date.month == 12:
@@ -86,141 +145,143 @@ def generate_demo_transactions():
         else:
             current_date = current_date.replace(month=current_date.month + 1)
     
+    # Food transactions
+    current_date = start_date
+    food_places = ['WHOLE FOODS', 'CHIPOTLE', 'STARBUCKS', 'SAFEWAY', 'TRADER JOES']
+    while current_date <= end_date:
+        if random.random() < 0.6:  # 60% chance daily
+            place = random.choice(food_places)
+            amount = -random.uniform(15, 120)
+            transactions.append({
+                'date': current_date,
+                'description': f'{place} PURCHASE',
+                'amount': round(amount, 2),
+                'category': 'Food',
+                'source': 'Wells Fargo Checking',
+                'month': current_date.strftime('%Y-%m'),
+                'transaction_hash': f"food_{current_date.isoformat()}_{place}_{random.randint(1000,9999)}"
+            })
+        current_date += timedelta(days=1)
+    
     # Investment transactions
+    current_date = start_date.replace(day=1)
     investments = [
-        ("Wealthfront", 800, 1),
-        ("Schwab", 400, 5), 
-        ("Robinhood", 200, 15),
-        ("Acorns", 100, 1)  # Weekly, so every Monday
+        ('WEALTHFRONT', -800, 1),
+        ('SCHWAB', -400, 5),
+        ('ROBINHOOD', -200, 15)
     ]
     
-    for investment, amount, day in investments:
-        if investment == "Acorns":
-            # Weekly on Mondays
-            current_date = start_date
-            while current_date <= end_date:
-                if current_date.weekday() == 0:  # Monday
-                    transaction = Transaction(
-                        date=current_date,
-                        description=f"TRANSFER TO {investment.upper()}",
-                        amount=Decimal(f'-{amount}.00'),
-                        category="Investment",
-                        source="Wells Fargo Checking",
-                        transaction_hash=f"demo_{current_date}_{investment.lower()}",
-                        month_str=current_date.strftime("%Y-%m")
-                    )
-                    session.add(transaction)
-                current_date += timedelta(days=1)
-        else:
-            # Monthly
-            current_date = start_date.replace(day=day)
-            while current_date <= end_date:
-                transaction = Transaction(
-                    date=current_date,
-                    description=f"TRANSFER TO {investment.upper()}",
-                    amount=Decimal(f'-{amount}.00'),
-                    category="Investment",
-                    source="Wells Fargo Checking",
-                    transaction_hash=f"demo_{current_date}_{investment.lower()}",
-                    month_str=current_date.strftime("%Y-%m")
-                )
-                session.add(transaction)
-                
-                # Next month
-                if current_date.month == 12:
-                    current_date = current_date.replace(year=current_date.year + 1, month=1)
-                else:
-                    current_date = current_date.replace(month=current_date.month + 1)
+    for inv_name, amount, day in investments:
+        temp_date = current_date.replace(day=day)
+        while temp_date <= end_date:
+            transactions.append({
+                'date': temp_date,
+                'description': f'TRANSFER TO {inv_name}',
+                'amount': amount,
+                'category': 'Investment',
+                'source': 'Wells Fargo Checking',
+                'month': temp_date.strftime('%Y-%m'),
+                'transaction_hash': f"invest_{inv_name}_{temp_date.isoformat()}_{random.randint(1000,9999)}"
+            })
+            
+            # Next month
+            if temp_date.month == 12:
+                temp_date = temp_date.replace(year=temp_date.year + 1, month=1)
+            else:
+                temp_date = temp_date.replace(month=temp_date.month + 1)
     
-    # Random food, transportation, shopping transactions
-    categories = [
-        ("Food", ["WHOLE FOODS", "STARBUCKS", "CHIPOTLE", "SAFEWAY"], 25, 85),
-        ("Transportation", ["SHELL", "UBER", "LYFT", "CHEVRON"], 15, 75),
-        ("Shopping", ["AMAZON", "TARGET", "COSTCO", "WALMART"], 20, 150),
-        ("Entertainment", ["NETFLIX", "SPOTIFY", "AMC THEATERS"], 10, 80),
-        ("Utilities", ["PG&E", "COMCAST", "VERIZON"], 50, 120)
+    # Weekly Acorns
+    current_date = start_date
+    while current_date <= end_date:
+        if current_date.weekday() == 0:  # Monday
+            transactions.append({
+                'date': current_date,
+                'description': 'ACORNS ROUNDUP',
+                'amount': -25.0,
+                'category': 'Investment',
+                'source': 'Wells Fargo Checking',
+                'month': current_date.strftime('%Y-%m'),
+                'transaction_hash': f"acorns_{current_date.isoformat()}_{random.randint(1000,9999)}"
+            })
+        current_date += timedelta(days=1)
+    
+    # Random other transactions
+    other_categories = [
+        ('Transportation', ['SHELL', 'UBER', 'LYFT'], -30, -100),
+        ('Shopping', ['AMAZON', 'TARGET', 'WALMART'], -20, -200),
+        ('Entertainment', ['NETFLIX', 'SPOTIFY', 'AMC'], -10, -80),
+        ('Utilities', ['PG&E', 'COMCAST', 'VERIZON'], -50, -150),
+        ('Healthcare', ['MEDICAL GROUP', 'PHARMACY'], -40, -300)
     ]
     
     current_date = start_date
     while current_date <= end_date:
-        # Random transactions each day
-        for _ in range(random.randint(0, 3)):  # 0-3 transactions per day
-            category, merchants, min_amt, max_amt = random.choice(categories)
-            merchant = random.choice(merchants)
-            amount = round(random.uniform(min_amt, max_amt), 2)
-            
-            transaction = Transaction(
-                date=current_date,
-                description=f"{merchant} PURCHASE",
-                amount=Decimal(f'-{amount}'),
-                category=category,
-                source="Wells Fargo Checking",
-                transaction_hash=f"demo_{current_date}_{merchant.lower()}_{amount}",
-                month_str=current_date.strftime("%Y-%m")
-            )
-            session.add(transaction)
-        
+        for cat_name, vendors, min_amt, max_amt in other_categories:
+            if random.random() < 0.15:  # 15% chance daily
+                vendor = random.choice(vendors)
+                amount = round(random.uniform(min_amt, max_amt), 2)
+                transactions.append({
+                    'date': current_date,
+                    'description': f'{vendor} PURCHASE',
+                    'amount': amount,
+                    'category': cat_name,
+                    'source': 'Wells Fargo Checking',
+                    'month': current_date.strftime('%Y-%m'),
+                    'transaction_hash': f"{cat_name.lower()}_{current_date.isoformat()}_{vendor}_{random.randint(1000,9999)}"
+                })
         current_date += timedelta(days=1)
     
-    session.commit()
-    session.close()
-    print("✅ Generated demo transactions")
+    return transactions
 
-def generate_demo_portfolio():
-    """Generate demo portfolio using your real models"""
-    print("📈 Generating demo portfolio...")
+
+def generate_portfolio_data(session):
+    """Generate portfolio balance data"""
+    print("📈 Generating portfolio data...")
     
-    session = get_db_session()
+    from database import PortfolioBalanceModel, InvestmentAccountModel
     
-    # Portfolio accounts with target values
-    accounts = [
-        ("Wealthfront Investment", "Wealthfront", "brokerage", 75000),
-        ("Schwab Brokerage", "Schwab", "brokerage", 45000),
-        ("401(k) Plan", "ADP", "401k", 35000),
-        ("Robinhood", "Robinhood", "brokerage", 20000),
-        ("Acorns", "Acorns", "brokerage", 15000),
-        ("Roth IRA", "Schwab", "roth_ira", 8000),
-        ("Wealthfront Cash", "Wealthfront", "cash", 2000)
-    ]
+    # Get investment accounts
+    accounts = session.query(InvestmentAccountModel).all()
     
-    # Create accounts
-    for account_name, institution, account_type, target_value in accounts:
-        account = InvestmentAccount(
-            account_name=account_name,
-            institution=institution,
-            account_type=account_type,
-            is_active=True
-        )
-        session.add(account)
-    
-    session.commit()
+    # Portfolio allocations
+    allocations = {
+        'Wealthfront Investment': 0.375,
+        'Schwab Brokerage': 0.225,
+        'Robinhood': 0.10,
+        'Acorns': 0.075,
+        '401(k) Plan': 0.175,
+        'Roth IRA': 0.04,
+        'Wealthfront Cash': 0.01
+    }
     
     # Generate monthly balances for 2 years
-    start_date = date(2023, 1, 1)
-    end_date = date(2024, 12, 31)
+    current_date = date(2023, 1, 1)
+    total_portfolio = 150000.0  # Starting value
     
-    current_date = start_date.replace(day=1)
-    month_count = 0
-    
-    while current_date <= end_date:
-        for account_name, institution, account_type, target_value in accounts:
-            # Simulate growth over time
-            growth_factor = 1 + (month_count * 0.007)  # ~8.4% annual growth
-            current_value = target_value * growth_factor
-            
-            # Add some randomness
-            current_value *= random.uniform(0.95, 1.05)
-            
-            balance = PortfolioBalance(
-                account_id=1,  # Will be auto-assigned
-                account_name=account_name,
-                balance_date=current_date,
-                balance_amount=Decimal(str(round(current_value, 2))),
-                data_source="demo_generated"
-            )
-            session.add(balance)
+    while current_date <= date(2026, 6, 1):
+        # Grow portfolio with market gains + contributions
+        months_elapsed = (current_date.year - 2023) * 12 + (current_date.month - 1)
+        monthly_contribution = 1425  # Monthly investments
+        market_growth = 1 + (0.085 / 12)  # 8.5% annual return
         
-        month_count += 1
+        total_portfolio = (150000 + monthly_contribution * months_elapsed) * (market_growth ** months_elapsed)
+        
+        # Add some volatility
+        volatility = random.uniform(0.95, 1.05)
+        total_portfolio *= volatility
+        
+        for account in accounts:
+            if account.account_name in allocations:
+                account_balance = total_portfolio * allocations[account.account_name]
+                
+                balance = PortfolioBalanceModel(
+                    account_id=account.id,
+                    balance_date=current_date,
+                    balance_amount=round(account_balance, 2),
+                    data_source='manual'
+                )
+                session.add(balance)
+        
         # Next month
         if current_date.month == 12:
             current_date = current_date.replace(year=current_date.year + 1, month=1)
@@ -228,109 +289,125 @@ def generate_demo_portfolio():
             current_date = current_date.replace(month=current_date.month + 1)
     
     session.commit()
-    session.close()
-    print("✅ Generated demo portfolio")
+    print(f"✅ Generated portfolio data (final value: ${total_portfolio:,.2f})")
 
-def generate_demo_bank_balances():
-    """Generate demo bank balances"""
-    print("🏦 Generating demo bank balances...")
+
+def generate_bank_balances(session):
+    """Generate bank balance data"""
+    print("🏦 Generating bank balances...")
     
-    session = get_db_session()
+    from database import BankBalanceModel
     
     accounts = [
-        ("Wells Fargo Checking", 15000),
-        ("Wells Fargo Savings", 25000)
+        ('Wells Fargo Checking', 15000),
+        ('Wells Fargo Savings', 25000)
     ]
     
-    start_date = date(2023, 1, 1)
-    end_date = date(2024, 12, 31)
+    current_date = date(2023, 1, 1)
     
     for account_name, base_balance in accounts:
-        current_date = start_date.replace(day=1)
+        temp_date = current_date
         previous_balance = base_balance
         
-        while current_date <= end_date:
-            if "Checking" in account_name:
+        while temp_date <= date(2025, 6, 1):
+            if 'Checking' in account_name:
                 deposits = random.uniform(6000, 8000)
-                withdrawals = random.uniform(5500, 7500)
+                withdrawals = random.uniform(5800, 7800)
             else:
                 deposits = random.uniform(500, 1500)
                 withdrawals = random.uniform(0, 300)
             
             ending_balance = previous_balance + deposits - withdrawals
-            ending_balance = max(ending_balance * random.uniform(0.98, 1.02), 1000)
+            ending_balance = max(ending_balance * random.uniform(0.95, 1.05), 1000)
             
-            bank_balance = BankBalance(
+            balance = BankBalanceModel(
                 account_name=account_name,
-                statement_month=current_date.strftime("%Y-%m"),
-                beginning_balance=Decimal(str(round(previous_balance, 2))),
-                ending_balance=Decimal(str(round(ending_balance, 2))),
-                deposits_additions=Decimal(str(round(deposits, 2))),
-                withdrawals_subtractions=Decimal(str(round(withdrawals, 2))),
-                statement_date=current_date
+                statement_month=temp_date.strftime('%Y-%m'),
+                beginning_balance=round(previous_balance, 2),
+                ending_balance=round(ending_balance, 2),
+                deposits_additions=round(deposits, 2),
+                withdrawals_subtractions=round(withdrawals, 2),
+                statement_date=temp_date
             )
-            session.add(bank_balance)
+            session.add(balance)
             
             previous_balance = ending_balance
             
             # Next month
-            if current_date.month == 12:
-                current_date = current_date.replace(year=current_date.year + 1, month=1)
+            if temp_date.month == 12:
+                temp_date = temp_date.replace(year=temp_date.year + 1, month=1)
             else:
-                current_date = current_date.replace(month=current_date.month + 1)
+                temp_date = temp_date.replace(month=temp_date.month + 1)
     
     session.commit()
-    session.close()
-    print("✅ Generated demo bank balances")
+    print("✅ Generated bank balance data")
 
-def generate_monthly_summaries():
-    """Generate monthly summaries using your repository"""
+
+def generate_monthly_summaries(session, categories):
+    """Generate monthly summary data"""
     print("📊 Generating monthly summaries...")
     
-    repo = MonthlySummaryRepository()
+    # This uses your existing monthly summary table structure
+    from sqlalchemy import text
     
-    # Get the categories from config
-    from src.config.config_manager import ConfigManager
-    config = ConfigManager()
-    categories = config.get_categories()
+    # Get all transactions by month
+    result = session.execute(text("""
+        SELECT month, category, SUM(ABS(amount)) as total
+        FROM transactions 
+        GROUP BY month, category
+        ORDER BY month
+    """))
     
-    # This will automatically generate summaries from the transactions
-    try:
-        # Just trigger the summary generation - your existing code should work
-        summary_df = repo.generate_monthly_summary()
-        print("✅ Generated monthly summaries")
-    except Exception as e:
-        print(f"⚠️  Monthly summary generation failed: {e}")
-        print("   (This is normal - summaries will be generated when API runs)")
+    monthly_data = {}
+    for row in result:
+        month = row[0]
+        category = row[1]
+        total = row[2]
+        
+        if month not in monthly_data:
+            monthly_data[month] = {}
+        
+        monthly_data[month][category] = total
+    
+    # Insert into monthly_summary table
+    for month, data in monthly_data.items():
+        year = int(month.split('-')[0])
+        month_name = month.split('-')[1]
+        
+        # Build values dict for SQLAlchemy
+        values_dict = {
+            'month': month_name,
+            'year': year,
+            'month_year': month
+        }
+        
+        total = 0
+        investment_total = 0
+        
+        for category_name in categories.keys():
+            col_name = category_name.replace(' ', '_').replace('-', '_')
+            amount = data.get(category_name, 0)
+            values_dict[col_name] = amount
+            
+            if category_name != 'Income':
+                total += amount
+                if category_name == 'Investment':
+                    investment_total += amount
+        
+        values_dict['investment_total'] = investment_total
+        values_dict['total'] = total
+        values_dict['total_minus_invest'] = total - investment_total
+        
+        # Create SQL with named parameters
+        columns = list(values_dict.keys())
+        placeholders = ', '.join([f':{col}' for col in columns])
+        sql = f"INSERT OR REPLACE INTO monthly_summary ({', '.join(columns)}) VALUES ({placeholders})"
+        
+        session.execute(text(sql), values_dict)
+    
+    session.commit()
+    print("✅ Generated monthly summary data")
 
-def main():
-    """Generate complete demo database"""
-    print("🎬 Generating Demo Database with Real Schema")
-    print("=" * 50)
-    
-    # Initialize your real database schema
-    from src.config.config_manager import ConfigManager
-    config = ConfigManager()
-    categories = config.get_categories()
-    
-    init_database(categories.keys())
-    
-    # Clear existing data
-    clear_existing_data()
-    
-    # Generate demo data using your real models
-    generate_demo_transactions()
-    generate_demo_portfolio() 
-    generate_demo_bank_balances()
-    generate_monthly_summaries()
-    
-    print("=" * 50)
-    print("🎉 Demo database generated!")
-    print("🚀 Your existing API should work perfectly now!")
-    print("")
-    print("Start your servers:")
-    print("  Backend: python3 run_api.py")
-    print("  Frontend: cd finance-dashboard && npm start")
 
 if __name__ == "__main__":
-    main()
+    create_demo_database()

@@ -1,16 +1,17 @@
-# Personal data
+# Personal data (NEVER commit)
+finances.db
 *.db
-*.sqlite*
 config.yaml
 .env
 raw/
 transformed/
 exports/
 
-# Demo data (included in repo)
+# Demo data (INCLUDE in repo)
 !demo_data.db
 !config.demo.yaml
 !.env.example
+!demo/
 
 # Dependencies
 node_modules/

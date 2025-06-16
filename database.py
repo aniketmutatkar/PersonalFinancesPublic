@@ -1,8 +1,6 @@
 """
-Demo Database Module for Personal Finance Dashboard
-
-Uses your actual database structure but points to demo data.
-This ensures complete compatibility with your existing codebase.
+Database setup and session management for the Finance Tracker application.
+Updated to include portfolio tracking tables.
 """
 
 from sqlalchemy import create_engine, Column, Integer, String, Float, Date, Boolean, DateTime, Table, MetaData, text
@@ -10,8 +8,8 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from datetime import datetime
 
-# Demo Database setup - points to demo data
-DB_NAME = 'demo_data.db'  # Demo database instead of your personal one
+# Database setup
+DB_NAME = 'demo_data.db'
 DB_URL = f'sqlite:///{DB_NAME}'
 engine = create_engine(DB_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
@@ -38,7 +36,7 @@ class TransactionModel(Base):
     amount = Column(Float, nullable=False)
     category = Column(String, nullable=False)
     source = Column(String, nullable=False)
-    month = Column(String, nullable=False)  # Month name like "January", "February"
+    month = Column(String, nullable=False)  # Month in YYYY-MM format
     transaction_hash = Column(String, unique=True, nullable=False)
     
     def __repr__(self):
@@ -90,7 +88,7 @@ class BankBalanceModel(Base):
     deposits_additions = Column(Float)                  # 8747.54
     withdrawals_subtractions = Column(Float)           # 5794.14
     statement_date = Column(Date, nullable=False)      # 2025-05-31
-    data_source = Column(String, default='demo_generated')  # 'pdf_statement', 'excel_import'
+    data_source = Column(String, default='pdf_statement')  # 'pdf_statement', 'excel_import'
     confidence_score = Column(Float, default=1.0)
     notes = Column(String)
     created_at = Column(DateTime, default=datetime.utcnow)
@@ -139,8 +137,6 @@ InvestmentAccount = InvestmentAccountModel
 PortfolioBalance = PortfolioBalanceModel
 BankBalance = BankBalanceModel
 StatementUpload = StatementUploadModel
-
-# For compatibility with your existing code that may use different names
 MonthlyMassageSummary = None  # Will be defined below
 
 
@@ -151,54 +147,27 @@ def create_monthly_summary_table(categories):
     # Prepare columns list
     columns = [
         Column('id', Integer, primary_key=True),
-        Column('month_str', String, unique=True),  # Demo uses month_str instead of month/year
-        Column('total_income', Float, default=0),
-        Column('total_spending', Float, default=0),
-        Column('total_investments', Float, default=0),
-        Column('total_minus_invest', Float, default=0),
-        Column('category_totals_json', String),  # Demo stores categories as JSON
+        Column('month', String),
+        Column('year', Integer),
+        Column('month_year', String, unique=True),
     ]
     
-    # Add category columns (optional for demo, since we use JSON)
+    # Add category columns
     for category in categories:
-        columns.append(Column(category.replace(' ', '_').lower(), Float, default=0))
+        columns.append(Column(category, Float, default=0))
+    
+    # Add calculated columns
+    columns.append(Column('investment_total', Float, default=0))
+    columns.append(Column('total', Float, default=0))
+    columns.append(Column('total_minus_invest', Float, default=0))
     
     # Create table definition
-    monthly_summary = Table('monthly_summaries', metadata, *columns)
+    monthly_summary = Table('monthly_summary', metadata, *columns)
     
     # Create the table if it doesn't exist
     metadata.create_all(bind=engine)
     
     return monthly_summary
-
-
-# Monthly Summary Model (created after we know the structure)
-class MonthlySummaryModel(Base):
-    """SQLAlchemy model for Monthly Summaries (demo version)"""
-    __tablename__ = 'monthly_summaries'
-    
-    id = Column(Integer, primary_key=True)
-    month_str = Column(String, unique=True, nullable=False)  # '2024-01'
-    total_income = Column(Float, nullable=False)
-    total_spending = Column(Float, nullable=False)  
-    total_investments = Column(Float, nullable=False)
-    total_minus_invest = Column(Float, nullable=False)
-    category_totals_json = Column(String)  # JSON string of category totals
-    
-    @property
-    def category_totals(self):
-        """Parse category totals from JSON"""
-        if self.category_totals_json:
-            import json
-            return json.loads(self.category_totals_json)
-        return {}
-    
-    def __repr__(self):
-        return f"<MonthlySummary(month='{self.month_str}', spending={self.total_spending})>"
-
-
-# Now set the alias
-MonthlyMassageSummary = MonthlySummaryModel
 
 
 def seed_investment_accounts():
@@ -274,10 +243,10 @@ def add_portfolio_constraints():
     """Add database constraints for portfolio tables"""
     session = get_db_session()
     try:
-        # Add unique constraint for portfolio_balances (account_name, balance_date)
+        # Add unique constraint for portfolio_balances (account_id, balance_date)
         session.execute(text("""
         CREATE UNIQUE INDEX IF NOT EXISTS idx_portfolio_balances_unique 
-        ON portfolio_balances(account_name, balance_date)
+        ON portfolio_balances(account_id, balance_date)
         """))
         
         # Add index for faster queries
@@ -288,7 +257,7 @@ def add_portfolio_constraints():
         
         session.execute(text("""
         CREATE INDEX IF NOT EXISTS idx_portfolio_balances_account 
-        ON portfolio_balances(account_name)
+        ON portfolio_balances(account_id)
         """))
         
         session.commit()
@@ -379,7 +348,7 @@ def add_enhanced_duplicate_constraints():
         # Enhanced portfolio balance constraints - month-level uniqueness
         session.execute(text("""
         CREATE INDEX IF NOT EXISTS idx_portfolio_balances_month 
-        ON portfolio_balances(account_name, strftime('%Y-%m', balance_date))
+        ON portfolio_balances(account_id, strftime('%Y-%m', balance_date))
         """))
         
         # Statement upload filename protection
@@ -407,7 +376,7 @@ def add_enhanced_duplicate_constraints():
 
 def init_database(categories):
     """Initialize the SQLite database with required tables"""
-    print("Initializing demo database...")
+    print("Initializing database...")
     
     # Create all SQLAlchemy tables
     Base.metadata.create_all(bind=engine)
@@ -415,7 +384,7 @@ def init_database(categories):
     # Create monthly_summary table with dynamic columns
     create_monthly_summary_table(categories)
     
-    # Seed investment accounts (if not already seeded)
+    # Seed investment accounts
     seed_investment_accounts()
     
     # Add portfolio constraints
@@ -428,17 +397,4 @@ def init_database(categories):
     
     add_enhanced_duplicate_constraints()
     
-    print("Demo database initialized successfully with enhanced duplicate detection.")
-
-
-if __name__ == "__main__":
-    # Test the database
-    print("Testing demo database connection...")
-    try:
-        session = get_db_session()
-        accounts = session.query(InvestmentAccountModel).all()
-        print(f"Found {len(accounts)} investment accounts in demo database")
-        session.close()
-        print("✅ Demo database connection successful!")
-    except Exception as e:
-        print(f"❌ Demo database error: {e}")
+    print("Database initialized successfully with enhanced duplicate detection.")
